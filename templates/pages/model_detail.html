@@ -1,0 +1,105 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">     
+        <div class="d-flex align-items-center">   
+            {% if obj.type == 'GEN' %}
+                <img src="{% static 'MIDAS/GEN.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+            {% elif obj.type == 'CIVIL' %}
+                <img src="{% static 'MIDAS/CIVIL.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+            {% elif obj.type == 'GTS' %}
+                <img src="{% static 'MIDAS/GTSNX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+            {% elif obj.type == 'FEA' %}
+                <img src="{% static 'MIDAS/FEANX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+            {% elif obj.type == 'NFX' %}
+                <img src="{% static 'MIDAS/NFX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+            {% endif %}        
+          <h6>{{ obj.file.name|basename }}</h6>
+        </div>        
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+        <form method="post" action="{% url 'model_detail' obj.id %}">
+          {% csrf_token %}          
+            <div class="card-body">
+                <div class="mb-3">
+                    <label for="file" class="form-label">File</label>
+                    <input type="text" class="form-control" id="file" name="file" value="{{ obj.file.name|basename }}" readonly>                
+                </div>
+              <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                {% if reload %}
+                  <textarea class="form-control" id="description" name="description" rows="2" readonly>{{ obj.description }}</textarea>
+                {% else %}
+                  <textarea class="form-control" id="description" name="description" rows="2">{{ obj.description }}</textarea>
+                {% endif %}
+              </div>
+              <div class="mb-3">
+                <label for="status" class="form-label">Status</label>
+                <input type="text" class="form-control" id="status" name="status" value="{{ obj.status }}" readonly>
+              </div>
+              <div class="mb-3">
+                <label for="created_at" class="form-label">Created at</label>
+                <input type="text" class="form-control" id="created_at" name="created_at" value="{{ obj.created_at|date:'y/m/d H:i:s A' }}" readonly>
+              </div>              
+              <div class="mb-3">
+                <label for="executed_at" class="form-label">Executed at</label>
+                {% if obj.executed_at == NULL %}
+                    <input type="text" class="form-control" id="executed_at" name="executed_at" value="-" readonly>
+                {% else %}
+                    <input type="text" class="form-control" id="executed_at" name="executed_at" value="{{ obj.executed_at|date:'y/m/d H:i:s A' }}" readonly>
+                {% endif %}                
+              </div>
+              <div class="mb-3">
+                <label for="stdout" class="form-label">Standard Output</label>
+                {% if obj.executed_at == NULL %}
+                    <textarea class="form-control" id="stdout" name="stdout" rows="5" oninput="autoResize(this)" readonly></textarea>
+                {% else %}
+                  {%if obj.stdout == '' %}
+                    <textarea class="form-control" id="stdout" name="stdout" rows="5" oninput="autoResize(this)" readonly style="overflow: hidden; resize: none;">{{ stdout }}</textarea>
+                  {% else %}
+                    <textarea class="form-control" id="stdout" name="stdout" rows="5" oninput="autoResize(this)" readonly style="overflow: hidden; resize: none;">{{ obj.stdout }}</textarea>
+                  {% endif %}
+                {% endif %}                                
+              </div>              
+                <button type="submit" class="btn btn-secondary">Save changes</button>
+              <a href="{% url 'model_list' %}" class="btn btn-secondary">Cancel</a>
+            </div>
+        </form>
+        {% if messages %}
+            <div class="mt-3">
+              {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                  {{ message }}
+                </div>
+              {% endfor %}
+            </div>
+        {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>  
+  function autoResize(textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+  }
+    
+  document.addEventListener('DOMContentLoaded', function() {
+      var textarea = document.getElementById('stdout');
+      if (textarea) {
+          autoResize(textarea);
+          textarea.scrollTop = textarea.scrollHeight;
+      }
+  });
+    </script>
+{% endblock %}

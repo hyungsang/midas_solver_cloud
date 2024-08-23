@@ -1,0 +1,44 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container-fluid py-4">
+  <h6>Console output</h6>
+  <textarea class="form-control" id="stdout" name="stdout" rows="30" readonly>{{ stdout }}</textarea>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+  // 페이지를 1초마다 새로고침하는 함수
+  function reloadPage() {
+      setTimeout(function() {
+          location.reload();
+      }, 5000); // 1000 밀리초 = 1초
+  }
+  // 페이지가 로드될 때 reloadPage 함수 호출
+  window.onload = function() {
+      {% if reload %}
+          reloadPage();
+      {% endif %}
+      setTimeout(function() {
+          window.scrollTo(0, document.documentElement.scrollHeight);
+      }, 500);
+  };
+
+  function autoResize(textarea) {
+      textarea.style.height = 'auto';
+      textarea.style.height = textarea.scrollHeight + 'px';
+  }
+    
+  // 페이지 로드 시 초기 높이 조정
+  document.addEventListener('DOMContentLoaded', function() {
+      var textarea = document.getElementById('stdout');
+      if (textarea) {
+          // autoResize(textarea);
+          textarea.scrollTop = textarea.scrollHeight;
+      }
+  });
+    </script>
+{% endblock %}

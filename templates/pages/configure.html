@@ -1,0 +1,48 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+
+{% block title %}
+File Upload
+{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+  <h5 class="mb-4">Configuration</h5>
+  <form method="post" action="{% url 'configure' %}">
+      {% csrf_token %}
+      <div class="form-group">
+          <label for="max_run">Maximum Excution : </label>
+          <input type="number" class="form-control" id="max_run" name="max_run" min="1" max="10" value="{% if config %}{{ config.max_run }}{% else %}2{% endif %}">
+      </div>
+      <div class="form-group">
+          <label for="gen_path">MIDAS Gen Path : </label>
+          <input type="text" class="form-control" id="gen_path" name="gen_path" value="{% if config %}{{ config.gen_path }}{% else %}Input Path{% endif %}">
+      </div>
+      <div class="form-group">
+          <label for="civil_path">MIDAS Civil Path : </label>
+          <input type="text" class="form-control" id="civil_path" name="civil_path" value="{% if config %}{{ config.civil_path }}{% else %}Input Path{% endif %}">
+      </div>
+      <div class="form-group">
+          <label for="gts_path">MIDAS GTSNX Path : </label>
+          <input type="text" class="form-control" id="gts_path" name="gts_path" value="{% if config %}{{ config.gts_path }}{% else %}Input Path{% endif %}">
+      </div>
+      <div class="form-group">
+          <label for="fea_path">MIDAS FEANX Path : </label>
+          <input type="text" class="form-control" id="fea_path" name="fea_path" value="{% if config %}{{ config.fea_path }}{% else %}Input Path{% endif %}">
+      </div>
+      <div class="form-group">
+          <label for="nfx_path">MIDAS NFX Path : </label>
+          <input type="text" class="form-control" id="nfx_path" name="nfx_path" value="{% if config %}{{ config.nfx_path }}{% else %}Input Path{% endif %}">
+      </div>
+      <button type="submit" class="btn btn-secondary">Save Configuration</button>
+      <a href="{% url 'model_list' %}" class="btn btn-secondary">Cancel</a>
+  </form>
+  {% if messages %}
+      <div class="mt-4">
+          {% for message in messages %}
+              <div class="alert alert-{{ message.tags }}">{{ message }}</div>
+          {% endfor %}
+      </div>
+  {% endif %}
+</div>
+{% endblock %}

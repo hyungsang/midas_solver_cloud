@@ -1,0 +1,249 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+
+<div class="container-fluid py-4">
+  <div class="row">
+    <div class="col-12">
+      <div class="card mb-4">
+        <div class="card-header pb-0">
+          <h6>MIDAS model files</h6>
+        </div>
+        <div class="card-body px-0 pt-0 pb-2">
+          <div class="table-responsive p-0">
+            <table class="table align-items-center mb-0">
+              <thead>
+                <tr>
+                  <th class="text-centertext-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Model</th>
+                  <th class="text-centertext-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Executed Date</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created Date</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for obj in model_files %}
+                <tr>
+                  <td>
+                    <div class="d-flex px-2 py-1">
+                      <div>
+                        {% if obj.type == 'GEN' %}
+                            <img src="{% static 'MIDAS/GEN.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                        {% elif obj.type == 'CIVIL' %}
+                            <img src="{% static 'MIDAS/CIVIL.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                        {% elif obj.type == 'GTS' %}
+                            <img src="{% static 'MIDAS/GTSNX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                        {% elif obj.type == 'FEA' %}
+                            <img src="{% static 'MIDAS/FEANX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                        {% elif obj.type == 'NFX' %}
+                            <img src="{% static 'MIDAS/NFX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                        {% endif %}
+                      </div>
+                      <div class="d-flex flex-column justify-content-center">
+                        <a href="{% url 'model_detail' obj.id %}" class="text-secondary font-weight-bold text-xs" data-toggle="tooltip" data-original-title="Edit model">
+                          <h6 class="mb-0 text-sm">{{ obj.file.name|basename }}</h6>
+                        </a>
+                      </div>
+                    </div>
+                  </td>
+                  <td class="text-left text-xs font-weight-bold mb-0">
+                    {% if obj.description == NULL %}
+                        <p class="text-xs font-weight-bold mb-0"> - </p>
+                    {% else %}                      
+                        <p class="text-xs font-weight-bold mb-0">{{ obj.description|truncate_chars:30 }}</p>
+                    {% endif %}                    
+                  </td>
+                  <td class="align-middle text-center text-sm">
+                    {% if obj.status == 'NONE' %}
+                    <span class="badge badge-sm bg-gradient-secondary">None</span>
+                    {% elif obj.status == 'RUNNING' %}
+                      <!-- <span class="badge badge-sm bg-gradient-info">Running</span> -->
+                      <div class="spinner-border text-danger" role="status">                        
+                      </div>
+                    {% elif obj.status == 'COMPLETED' %}
+                    <span class="badge badge-sm bg-gradient-info">Success</span>
+                    {% elif obj.status == 'STOPPED' %}
+                    <span class="badge badge-sm bg-gradient-danger">Stopped</span>
+                    {% elif obj.status == 'PENDING' %}
+                    <span class="badge badge-sm bg-gradient-dark">Pending</span>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    {% if obj.executed_at == NULL %}
+                        <p class="text-xs font-weight-bold mb-0"> - </p>
+                    {% else %}
+                        <p class="text-xs font-weight-bold mb-0">{{ obj.executed_at|date:'y/m/d' }}</p>
+                    {% endif %}
+                  </td>
+                  <td class="text-center">
+                    <p class="text-xs font-weight-bold mb-0">{{ obj.created_at|date:'y/m/d' }}</p>
+                  </td>
+                  <td class="btn-group btn-group-sm justify-content-center" role="group">
+                    <form id="run-form-{{ obj.id }}" action="{% url 'run_model' obj.id %}" method="post" style="display:inline;">
+                      {% csrf_token %}
+                    </form>
+                    <a href="#" class="btn btn-secondary run-link" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Run model" data-form-id="run-form-{{ obj.id }}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-start" viewBox="0 0 16 16">
+                        <path d="M4 4a.5.5 0 0 1 1 0v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L5 8.752V12a.5.5 0 0 1-1 0zm7.5.633L5.696 8l5.804 3.367z"/>
+                      </svg>
+                    </a>                  
+                  
+                    <form id="stop-form-{{ obj.id }}" action="{% url 'stop_model' obj.id %}" method="post" style="display:inline;">
+                      {% csrf_token %}
+                    </form>
+                    <a href="#" class="btn btn-outline-secondary stop-link" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Stop model" data-form-id="stop-form-{{ obj.id }}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-stop-circle" viewBox="0 0 16 16">
+                        <path d="M8 15A7 7 0 1 1 8 1a7 7 0 0 1 0 14m0 1A8 8 0 1 0 8 0a8 8 0 0 0 0 16"/>
+                        <path d="M5 6.5A1.5 1.5 0 0 1 6.5 5h3A1.5 1.5 0 0 1 11 6.5v3A1.5 1.5 0 0 1 9.5 11h-3A1.5 1.5 0 0 1 5 9.5z"/>
+                      </svg>
+                    </a>
+                  
+                    <form id="download-form-{{ obj.id }}" action="{% url 'download_model' obj.id %}" method="post" style="display:inline;">
+                      {% csrf_token %}
+                    </form>
+                    <a href="#" class="btn btn-secondary download-link" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Download model" data-form-id="download-form-{{ obj.id }}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-cloud-download" viewBox="0 0 16 16">
+                        <path d="M4.406 1.342A5.53 5.53 0 0 1 8 0c2.69 0 4.923 2 5.166 4.579C14.758 4.804 16 6.137 16 7.773 16 9.569 14.502 11 12.687 11H10a.5.5 0 0 1 0-1h2.688C13.979 10 15 8.988 15 7.773c0-1.216-1.02-2.228-2.313-2.228h-.5v-.5C12.188 2.825 10.328 1 8 1a4.53 4.53 0 0 0-2.941 1.1c-.757.652-1.153 1.438-1.153 2.055v.448l-.445.049C2.064 4.805 1 5.952 1 7.318 1 8.785 2.23 10 3.781 10H6a.5.5 0 0 1 0 1H3.781C1.708 11 0 9.366 0 7.318c0-1.763 1.266-3.223 2.942-3.593.143-.863.698-1.723 1.464-2.383"/>
+                        <path d="M7.646 15.854a.5.5 0 0 0 .708 0l3-3a.5.5 0 0 0-.708-.708L8.5 14.293V5.5a.5.5 0 0 0-1 0v8.793l-2.146-2.147a.5.5 0 0 0-.708.708z"/>
+                      </svg>
+                    </a>
+                  
+                    <form id="delete-form-{{ obj.id }}" action="{% url 'delete_model' obj.id %}" method="post" style="display:inline;">
+                      {% csrf_token %}
+                    </form>
+                    <a href="#" class="btn btn-outline-secondary delete-link" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Delete model" data-form-id="delete-form-{{ obj.id }}">
+                      <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-trash3" viewBox="0 0 16 16">
+                        <path d="M6.5 1h3a.5.5 0 0 1 .5.5v1H6v-1a.5.5 0 0 1 .5-.5M11 2.5v-1A1.5 1.5 0 0 0 9.5 0h-3A1.5 1.5 0 0 0 5 1.5v1H1.5a.5.5 0 0 0 0 1h.538l.853 10.66A2 2 0 0 0 4.885 16h6.23a2 2 0 0 0 1.994-1.84l.853-10.66h.538a.5.5 0 0 0 0-1zm1.958 1-.846 10.58a1 1 0 0 1-.997.92h-6.23a1 1 0 0 1-.997-.92L3.042 3.5zm-7.487 1a.5.5 0 0 1 .528.47l.5 8.5a.5.5 0 0 1-.998.06L5 5.03a.5.5 0 0 1 .47-.53Zm5.058 0a.5.5 0 0 1 .47.53l-.5 8.5a.5.5 0 1 1-.998-.06l.5-8.5a.5.5 0 0 1 .528-.47M8 4.5a.5.5 0 0 1 .5.5v8.5a.5.5 0 0 1-1 0V5a.5.5 0 0 1 .5-.5"/>
+                      </svg>                        
+                    </a>
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+            {% if messages %}
+            <div class="mt-3">
+                {% for message in messages %}
+                <div class="alert {% if message.tags %}alert-{{ message.tags }}{% else %}alert-info{% endif %}" role="alert">
+                    {{ message }}
+                </div>
+                {% endfor %}
+            </div>
+            {% endif %}
+          </div>
+        </div>        
+      </div>      
+    </div>    
+  </div>
+
+    <!-- {% include "includes/footer.html" %} -->
+
+    <nav aria-label="Page navigation example" class="centered-nav">
+      <ul class="pagination justify-content-center">
+        {% if model_files.has_previous %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ model_files.previous_page_number }}" aria-label="Previous">
+            <span aria-hidden="true">&laquo;</span>
+          </a>
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Previous">
+                <span aria-hidden="true">&laquo;</span>
+            </a>
+        </li>
+        {% endif %}
+        
+        {% for num in model_files.paginator.page_range %}
+            {% if num > model_files.number|add:'-3' and num < model_files.number|add:'3' %}
+                {% if num == model_files.number %}
+                    <li class="page-item">
+                        <a class="page-link" href="#">{{ num }}</a>
+                    </li>
+                {% else %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                {% endif %}
+            {% endif %}
+        {% endfor %}     
+
+        {% if model_files.has_next %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ model_files.next_page_number }}" aria-label="Next">
+            <span aria-hidden="true">&raquo;</span>
+          </a>          
+        </li>
+        {% else %}
+        <li class="page-item disabled">
+            <a class="page-link" href="#" aria-label="Next">
+                <span aria-hidden="true">&raquo;</span>
+            </a>
+        </li>
+        {% endif %}
+      </ul>
+    </nav>
+    
+  </div>   
+
+{% endblock content %}
+
+{% block scripts %}
+<script>
+  function reloadPage() {
+      setTimeout(function() {
+          location.reload();
+      }, 10000);
+  }
+  window.onload = function() {
+      {% if reload %}
+          reloadPage();
+      {% endif %}
+  };
+
+  document.addEventListener('DOMContentLoaded', function() {
+
+    document.querySelectorAll('.run-link').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            const formId = this.getAttribute('data-form-id');
+            if (confirm('Are you sure you to run the item?')) {
+                document.getElementById(formId).submit();
+            }
+        });
+    });
+
+    document.querySelectorAll('.delete-link').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            const formId = this.getAttribute('data-form-id');
+            if (confirm('Are you sure you to delete the item?')) {
+                document.getElementById(formId).submit();
+            }
+        });
+    });
+
+    document.querySelectorAll('.stop-link').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            const formId = this.getAttribute('data-form-id');
+            if (confirm('Are you sure you to stop the item?')) {
+                document.getElementById(formId).submit();
+            }
+        });
+    });
+
+    document.querySelectorAll('.download-link').forEach(function(element) {
+        element.addEventListener('click', function(event) {
+            event.preventDefault();
+            const formId = this.getAttribute('data-form-id');
+            document.getElementById(formId).submit();
+        });
+    });
+});
+</script>
+{% endblock %}
+

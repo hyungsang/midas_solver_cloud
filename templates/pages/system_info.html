@@ -1,0 +1,137 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load custom_filters %}
+
+{% block content %}
+<div class="container-fluid py-4">
+    <div class="row">    
+      <div class="col-12">
+        <div class="card mb-4">
+          <div class="card-header pb-0">
+            {% if running_models %}
+              <h6 class="text-danger font-weight-bold">Running Program List in Solver Cloud</h6>
+              <ul class="list-group">
+                {% for obj in running_models %}
+                  <li class="list-group-item text-primary font-weight-bold">{{ obj.file.name|basename }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <h6 class="text-success font-weight-bold">There is no running program in Solver Cloud</h6>
+            {% endif %}
+  
+            {% if pending_models %}
+              <h6 class="text-danger font-weight-bold">Pending Program List in Solver Cloud</h6>
+              <ul class="list-group">
+                {% for obj in pending_models %}
+                  <li class="list-group-item text-primary font-weight-bold">{{ obj.file.name|basename }}</li>
+                {% endfor %}
+              </ul>
+            {% else %}
+              <h6 class="text-success font-weight-bold">There is no pending program in Solver Cloud</h6>
+            {% endif %}
+
+            <div class="row">
+                <div class="col-sm-6 mb-3 mb-sm-0">
+                  <div class="card">
+                    <div class="card-body">
+                        {% if gpu_info %}
+                        <h6>System Information of Solver Cloud</h6>
+                        <ul class="list-group text-sm">
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>CPU usage</span>
+                              <span>{{ system_info.cpu_usage }} %</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Total CPUs</span>
+                              <span>{{ system_info.total_cpus }}</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>CPU Usage per CPU</span>
+                              <span>{{ system_info.cpu_usage_per_cpu }} %</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Total Memory</span>
+                              <span>{{ system_info.memory_total }} GB</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Available Memory</span>
+                              <span>{{ system_info.memory_available }} GB</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Used Memory</span>
+                              <span>{{ system_info.memory_used }} GB</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Free Memory</span>
+                              <span>{{ system_info.memory_free }} GB</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Total Disk</span>
+                              <span>{{ system_info.disk_total }} GB</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Used Disk</span>
+                              <span>{{ system_info.disk_used }} GB</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Free Disk</span>
+                              <span>{{ system_info.disk_free }} GB</span>
+                            </li>
+                            <li class="list-group-item d-flex justify-content-between">
+                              <span>Disk Percent</span>
+                              <span>{{ system_info.disk_percent }} %</span>
+                            </li>
+                          </ul>
+                        {% endif %}
+                    </div>
+                  </div>
+                </div>
+                <div class="col-sm-6">
+                  <div class="card">
+                    <div class="card-body">
+                        {% if gpu_info %}
+                        <h6>GPU Information of Solver Cloud</h6>
+                        <ul class="list-group text-sm">
+                            {% for obj in gpu_info %}
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>ID</span>
+                                <span>{{ obj.id }}</span>
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>Name</span>
+                                <span>{{ obj.name }}</span>
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>Load</span>
+                                <span>{{ obj.load }} %</span>
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>Total Memory</span>
+                                <span>{{ obj.memory_total }} MB</span>
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>Free Memory:</span>
+                                <span>{{ obj.memory_free }} MB</span>
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>Used Memory</span>
+                                <span>{{ obj.memory_used }} MB</span>
+                              </li>
+                              <li class="list-group-item d-flex justify-content-between">
+                                <span>Temperature</span>
+                                <span>{{ obj.temperature }} °C</span>
+                              </li>
+                            {% endfor %}
+                          </ul>
+                      {% endif %}
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+{% endblock %}
