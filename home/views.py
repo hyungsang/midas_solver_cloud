@@ -147,6 +147,7 @@ def model_console_view(request, pk):
     context = {
         'obj': obj,
         'stdout': gStdout.get(obj.pk, ''),
+        'reload': True,
     }
 
     return render(request, 'pages/model_console.html', context)
@@ -168,6 +169,7 @@ def model_detail_view(request, pk):
     context = {
         'obj': obj,
         'stdout': gStdout.get(obj.pk, ''),
+        'reload': True if obj.status == 'RUNNING' else False,
     }
     if obj.status == 'RUNNING':
         return render(request, 'pages/model_console.html', context)
