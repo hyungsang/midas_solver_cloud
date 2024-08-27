@@ -9,17 +9,17 @@
       <div class="card mb-4">
         <div class="card-header pb-0">     
         <div class="d-flex align-items-center">   
-            {% if obj.type == 'GEN' %}
-                <img src="{% static 'MIDAS/GEN.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
-            {% elif obj.type == 'CIVIL' %}
-                <img src="{% static 'MIDAS/CIVIL.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
-            {% elif obj.type == 'GTS' %}
-                <img src="{% static 'MIDAS/GTSNX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
-            {% elif obj.type == 'FEA' %}
-                <img src="{% static 'MIDAS/FEANX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
-            {% elif obj.type == 'NFX' %}
-                <img src="{% static 'MIDAS/NFX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
-            {% endif %}        
+          {% if obj.type == 'GEN' %}
+              <img src="{% static 'MIDAS/icon_product_gen.png' %}" class="avatar avatar-sm me-3" alt="model image">
+          {% elif obj.type == 'CIVIL' %}
+              <img src="{% static 'MIDAS/icon_product_civil.png' %}" class="avatar avatar-sm me-3" alt="model image">
+          {% elif obj.type == 'GTS' %}
+              <img src="{% static 'MIDAS/icon_product_gtsnx.png' %}" class="avatar avatar-sm me-3" alt="model image">
+          {% elif obj.type == 'FEA' %}
+              <img src="{% static 'MIDAS/icon_product_feanx.png' %}" class="avatar avatar-sm me-3" alt="model image">
+          {% elif obj.type == 'NFX' %}
+              <img src="{% static 'MIDAS/icon_product_nfx.png' %}" class="avatar avatar-sm me-3" alt="model image">
+          {% endif %}           
           <h6>{{ obj.file.name|basename }}</h6>
         </div>        
         </div>
@@ -40,8 +40,19 @@
                 {% endif %}
               </div>
               <div class="mb-3">
-                <label for="status" class="form-label">Status</label>
-                <input type="text" class="form-control" id="status" name="status" value="{{ obj.status }}" readonly>
+                <label for="status" class="form-label">Status : </label>
+                  {% if obj.status == 'NONE' %}
+                  <span class="badge badge-sm bg-gradient-secondary">None</span>
+                  {% comment %} {% elif obj.status == 'RUNNING' %}
+                    <span class="badge badge-sm bg-gradient-info">Running</span> {% endcomment %}
+                  {% elif obj.status == 'COMPLETED' %}
+                  <span class="badge badge-sm bg-gradient-info">Success</span>
+                  {% elif obj.status == 'STOPPED' %}
+                  <span class="badge badge-sm bg-gradient-danger">Stopped</span>
+                  {% elif obj.status == 'PENDING' %}
+                  <span class="badge badge-sm bg-gradient-dark">Pending</span>
+                  {% endif %}
+                {% comment %} <input type="text" class="form-control" id="status" name="status" value="{{ obj.status }}" readonly> {% endcomment %}
               </div>
               <div class="mb-3">
                 <label for="created_at" class="form-label">Created at</label>

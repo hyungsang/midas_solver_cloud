@@ -9,25 +9,25 @@
         <div class="card mb-4">
           <div class="card-header pb-0">
             {% if running_models %}
-              <h6 class="text-danger font-weight-bold">Running Program List in Solver Cloud</h6>
+              <h6 class="text-danger font-weight-bold">Running Program List in Cloud Solver</h6>
               <ul class="list-group">
                 {% for obj in running_models %}
                   <li class="list-group-item text-primary font-weight-bold">{{ obj.file.name|basename }}</li>
                 {% endfor %}
               </ul>
             {% else %}
-              <h6 class="text-success font-weight-bold">There is no running program in Solver Cloud</h6>
+              <h6 class="text-success font-weight-bold">There is no running program in Cloud Solver</h6>
             {% endif %}
   
             {% if pending_models %}
-              <h6 class="text-danger font-weight-bold">Pending Program List in Solver Cloud</h6>
+              <h6 class="text-danger font-weight-bold">Pending Program List in Cloud Solver</h6>
               <ul class="list-group">
                 {% for obj in pending_models %}
                   <li class="list-group-item text-primary font-weight-bold">{{ obj.file.name|basename }}</li>
                 {% endfor %}
               </ul>
             {% else %}
-              <h6 class="text-success font-weight-bold">There is no pending program in Solver Cloud</h6>
+              <h6 class="text-success font-weight-bold">There is no pending program in Cloud Solver</h6>
             {% endif %}
 
             <div class="row">
@@ -35,7 +35,7 @@
                   <div class="card">
                     <div class="card-body">
                         {% if gpu_info %}
-                        <h6>System Information of Solver Cloud</h6>
+                        <h6>System Information of Cloud Solver</h6>
                         <ul class="list-group text-sm">
                             <li class="list-group-item d-flex justify-content-between">
                               <span>CPU usage</span>
@@ -90,7 +90,7 @@
                   <div class="card">
                     <div class="card-body">
                         {% if gpu_info %}
-                        <h6>GPU Information of Solver Cloud</h6>
+                        <h6>GPU Information of Cloud Solver</h6>
                         <ul class="list-group text-sm">
                             {% for obj in gpu_info %}
                               <li class="list-group-item d-flex justify-content-between">

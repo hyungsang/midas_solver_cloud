@@ -5,17 +5,36 @@
 {% block content %}
 <div class="container-fluid py-4">
   <h6>Console output</h6>
-  <textarea class="form-control" id="stdout" name="stdout" rows="30" readonly>{{ stdout }}</textarea>
+  <div class="card-header px-0 pt-0 pb-2">     
+    <div class="d-flex align-items-center">   
+      {% if obj.type == 'GEN' %}
+          <img src="{% static 'MIDAS/icon_product_gen.png' %}" class="avatar avatar-sm me-3" alt="model image">
+      {% elif obj.type == 'CIVIL' %}
+          <img src="{% static 'MIDAS/icon_product_civil.png' %}" class="avatar avatar-sm me-3" alt="model image">
+      {% elif obj.type == 'GTS' %}
+          <img src="{% static 'MIDAS/icon_product_gtsnx.png' %}" class="avatar avatar-sm me-3" alt="model image">
+      {% elif obj.type == 'FEA' %}
+          <img src="{% static 'MIDAS/icon_product_feanx.png' %}" class="avatar avatar-sm me-3" alt="model image">
+      {% elif obj.type == 'NFX' %}
+          <img src="{% static 'MIDAS/icon_product_nfx.png' %}" class="avatar avatar-sm me-3" alt="model image">
+      {% endif %}     
+      <h6>{{ obj.file.name|basename }}</h6>
+    </div>        
+    </div>
+    <div class="card-body px-0 pt-0 pb-2">
+        <textarea class="form-control" id="console" name="console" rows="30" readonly>{{stdout}}</textarea>
+    </div>
 </div>
 {% endblock %}
 
 {% block scripts %}
+
 <script>
   // 페이지를 1초마다 새로고침하는 함수
   function reloadPage() {
       setTimeout(function() {
           location.reload();
-      }, 3000); // 1000 밀리초 = 1초
+      }, 1000); // 1000 밀리초 = 1초
   }
   // 페이지가 로드될 때 reloadPage 함수 호출
   window.onload = function() {
@@ -34,11 +53,11 @@
     
   // 페이지 로드 시 초기 높이 조정
   document.addEventListener('DOMContentLoaded', function() {
-      var textarea = document.getElementById('stdout');
+      var textarea = document.getElementById('console');
       if (textarea) {
           // autoResize(textarea);
           textarea.scrollTop = textarea.scrollHeight;
       }
   });
-    </script>
+</script>
 {% endblock %}

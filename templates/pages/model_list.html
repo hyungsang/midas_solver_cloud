@@ -36,15 +36,15 @@
                     <div class="d-flex px-2 py-1">
                       <div>
                         {% if obj.type == 'GEN' %}
-                            <img src="{% static 'MIDAS/GEN.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                            <img src="{% static 'MIDAS/icon_product_gen.png' %}" class="avatar avatar-sm me-3" alt="model image">
                         {% elif obj.type == 'CIVIL' %}
-                            <img src="{% static 'MIDAS/CIVIL.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                            <img src="{% static 'MIDAS/icon_product_civil.png' %}" class="avatar avatar-sm me-3" alt="model image">
                         {% elif obj.type == 'GTS' %}
-                            <img src="{% static 'MIDAS/GTSNX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                            <img src="{% static 'MIDAS/icon_product_gtsnx.png' %}" class="avatar avatar-sm me-3" alt="model image">
                         {% elif obj.type == 'FEA' %}
-                            <img src="{% static 'MIDAS/FEANX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                            <img src="{% static 'MIDAS/icon_product_feanx.png' %}" class="avatar avatar-sm me-3" alt="model image">
                         {% elif obj.type == 'NFX' %}
-                            <img src="{% static 'MIDAS/NFX.jpg' %}" class="avatar avatar-sm me-3" alt="model image">
+                            <img src="{% static 'MIDAS/icon_product_nfx.png' %}" class="avatar avatar-sm me-3" alt="model image">
                         {% endif %}
                       </div>
                       <div class="d-flex flex-column justify-content-center">
@@ -90,7 +90,7 @@
                     <form id="run-form-{{ obj.id }}" action="{% url 'run_model' obj.id %}" method="post" style="display:inline;">
                       {% csrf_token %}
                     </form>
-                    <a href="#" class="btn btn-secondary run-link" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Run model" data-form-id="run-form-{{ obj.id }}">
+                    <a href="#" class="btn btn-success run-link" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-title="Run model" data-form-id="run-form-{{ obj.id }}">
                       <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-skip-start rotate-180" viewBox="0 0 16 16">
                         <path d="M4 4a.5.5 0 0 1 1 0v3.248l6.267-3.636c.52-.302 1.233.043 1.233.696v7.384c0 .653-.713.998-1.233.696L5 8.752V12a.5.5 0 0 1-1 0zm7.5.633L5.696 8l5.804 3.367z"/>
                       </svg>
@@ -201,7 +201,7 @@
   function reloadPage() {
       setTimeout(function() {
           location.reload();
-      }, 10000);
+      }, 2000);
   }
   window.onload = function() {
       {% if reload %}

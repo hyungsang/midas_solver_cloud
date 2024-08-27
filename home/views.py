@@ -20,7 +20,17 @@ gStdout = {}
 
 #================================================================================================
 def index(request):
-    return render(request, 'pages/tables.html')
+    midas_model_files = MidasModelFile.objects.all()
+    paginator = Paginator(midas_model_files, 10)
+    page_number = request.GET.get('page')
+    page_obj = paginator.get_page(page_number)
+    running_models = MidasModelFile.objects.filter(status='RUNNING')
+    ncnt = running_models.count()
+    context = {
+        'model_files': page_obj,
+        'reload' : True if ncnt > 0 else False,
+    }
+    return render(request, 'pages/model_list.html', context)
 
 #================================================================================================
 def upload_file(request):
@@ -201,7 +211,7 @@ def delete_model(request, pk):
 #================================================================================================
 def run_model(request, pk):
     global gRunCount, gPending, gStdout    
-    config = MidasConfigure.objects.get(pk=1)
+    config = get_object_or_404(MidasConfigure, pk=1)
     obj = get_object_or_404(MidasModelFile, pk=pk)
     
     if obj.status == 'RUNNING' or obj.status == 'PENDING':
@@ -243,7 +253,7 @@ def redirect_func(request):
 def subprocess_monitor(request, process, obj, redirect_func):
     global gRunCount, gPending, gStdout
     try:
-        def read_stdout():
+        def read_stdout():            
             with process.stdout:
                 for line in iter(process.stdout.readline, b''):
                     if isinstance(line, bytes):
@@ -256,7 +266,7 @@ def subprocess_monitor(request, process, obj, redirect_func):
                         end = line.rfind('%')
                         line = line[:stt-1]+line[end+1:]
                     elif '\r' in line: 
-                        line = line.split('\r')[-1]
+                        line = line.split('\r')[-1]      
                     gStdout[obj.pk] = gStdout[obj.pk] + line + '\n'
 
         stdout_thread = threading.Thread(target=read_stdout)
@@ -291,7 +301,7 @@ def subprocess_monitor(request, process, obj, redirect_func):
         with transaction.atomic():
             obj.save()
     
-    redirect_func(request)
+    redirect_func(request)    
 
 #================================================================================================
 def run_model_file(request, obj):
