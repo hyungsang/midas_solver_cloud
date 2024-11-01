@@ -1,5 +1,5 @@
 from django.shortcuts import render, redirect, get_object_or_404, reverse
-from django.http import HttpResponse, HttpResponseRedirect, FileResponse, StreamingHttpResponse
+from django.http import HttpResponse, HttpResponseRedirect, FileResponse, StreamingHttpResponse, HttpRequest, JsonResponse
 from django.contrib import messages
 from django.core.paginator import Paginator
 from django.core.exceptions import ValidationError
@@ -12,7 +12,8 @@ import zipfile
 from django.core.files.storage import default_storage
 from django.core.files.base import ContentFile
 from time import sleep
-
+from django.core.handlers.wsgi import WSGIRequest
+from datetime import datetime
 
 gRunCount = 0
 gPending = 0
@@ -28,7 +29,7 @@ def index(request):
     ncnt = running_models.count()
     context = {
         'model_files': page_obj,
-        'reload' : True if ncnt > 0 else False,
+        'reload' : True if ncnt>0 else False,
     }
     return render(request, 'pages/model_list.html', context)
 
@@ -103,7 +104,7 @@ def model_list_view(request):
     ncnt = running_models.count()
     context = {
         'model_files': page_obj,
-        'reload' : True if ncnt > 0 else False,
+        'reload' : True if ncnt>0 else False,
     }
     return render(request, 'pages/model_list.html', context)
 
@@ -125,7 +126,7 @@ def download_model(request, pk):
                     if name == fname and ext != '.76':
                         zipf.write(os.path.join(file_path, file), file)
                 elif obj.type == 'GTS' or obj.type == 'FEA' or obj.type == 'NFX':
-                    if fname in name and ext != '.bin':
+                    if fname in name and not ext.startswith('.bin'):
                         zipf.write(os.path.join(file_path, file), file)   
     
     # response = HttpResponse(default_storage.open(zip_path).read(), content_type='application/zip')    
@@ -245,9 +246,9 @@ def terminate_process_and_children(request, pid):
         messages.warning(request, f"Error terminating processes: {e}")
 
 #================================================================================================
-def redirect_func(request):
-    print('call redirect_func')
-    return HttpResponseRedirect(reverse('model_list'))
+def redirect_func():
+    print('redirect_func')
+    return redirect('model_list')
 
 #================================================================================================
 def subprocess_monitor(request, process, obj, redirect_func):
@@ -260,13 +261,18 @@ def subprocess_monitor(request, process, obj, redirect_func):
                         line = line.decode('cp949', errors='replace').strip()
                     else:
                         line = line.strip()
+                    
                     line = line.replace('\x08\x08\x08\x08', '')                        
                     if '%' in line:
                         stt = line.find('%')
                         end = line.rfind('%')
                         line = line[:stt-1]+line[end+1:]
-                    elif '\r' in line: 
-                        line = line.split('\r')[-1]      
+                    elif '\r' in line:                         
+                        line = line.split('\r')[-1]
+
+                    current_time = datetime.now().strftime('[%H:%M:%S]')
+                    if(len(line) > 0):
+                        line = f'{current_time}   {line}'
                     gStdout[obj.pk] = gStdout[obj.pk] + line + '\n'
 
         stdout_thread = threading.Thread(target=read_stdout)
@@ -301,7 +307,7 @@ def subprocess_monitor(request, process, obj, redirect_func):
         with transaction.atomic():
             obj.save()
     
-    redirect_func(request)    
+    redirect_func()    
 
 #================================================================================================
 def run_model_file(request, obj):
@@ -474,3 +480,7 @@ def system_info(request):
     )
 
     return render(request, 'pages/system_info.html', context)
+
+#================================================================================================
+def model_view(request):
+    return render(request, 'pages/model_view.html')

@@ -1,8 +1,7 @@
-{% load i18n static admin_soft %}
+{% load i18n static %}
 {% get_current_language as LANGUAGE_CODE %}
 {% get_current_language_bidi as LANGUAGE_BIDI %}
-{% get_direction as direction %}
-{% get_admin_setting as admin_setting %}
+
 
 <!DOCTYPE html>
 <html lang="{{ LANGUAGE_CODE|default:"en-us" }}">
@@ -44,7 +43,7 @@
     </main>
 
     <!-- APP Configurator -->
-    {% include "includes/fixed-plugin.html" %} 
+    {% include "includes/fixed-plugin.html" %}
 
 <!--   Core JS Files   -->
 {% include 'includes/scripts.html' %}

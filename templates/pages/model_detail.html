@@ -30,15 +30,7 @@
                 <div class="mb-3">
                     <label for="file" class="form-label">File</label>
                     <input type="text" class="form-control" id="file" name="file" value="{{ obj.file.name|basename }}" readonly>                
-                </div>
-              <div class="mb-3">
-                <label for="description" class="form-label">Description</label>
-                {% if reload %}
-                  <textarea class="form-control" id="description" name="description" rows="2" readonly>{{ obj.description }}</textarea>
-                {% else %}
-                  <textarea class="form-control" id="description" name="description" rows="2">{{ obj.description }}</textarea>
-                {% endif %}
-              </div>
+                </div>              
               <div class="mb-3">
                 <label for="status" class="form-label">Status : </label>
                   {% if obj.status == 'NONE' %}
@@ -55,15 +47,23 @@
                 {% comment %} <input type="text" class="form-control" id="status" name="status" value="{{ obj.status }}" readonly> {% endcomment %}
               </div>
               <div class="mb-3">
+                <label for="description" class="form-label">Description</label>
+                {% if reload %}
+                  <textarea class="form-control" id="description" name="description" rows="2" readonly>{{ obj.description }}</textarea>
+                {% else %}
+                  <textarea class="form-control" id="description" name="description" rows="2">{{ obj.description }}</textarea>
+                {% endif %}
+              </div>
+              <div class="mb-3">
                 <label for="created_at" class="form-label">Created at</label>
-                <input type="text" class="form-control" id="created_at" name="created_at" value="{{ obj.created_at|date:'y/m/d H:i:s A' }}" readonly>
+                <input type="text" class="form-control" id="created_at" name="created_at" value="{{ obj.created_at|date:'Y/m/d   h:i:s A' }}" readonly>
               </div>              
               <div class="mb-3">
                 <label for="executed_at" class="form-label">Executed at</label>
                 {% if obj.executed_at == NULL %}
                     <input type="text" class="form-control" id="executed_at" name="executed_at" value="-" readonly>
                 {% else %}
-                    <input type="text" class="form-control" id="executed_at" name="executed_at" value="{{ obj.executed_at|date:'y/m/d H:i:s A' }}" readonly>
+                    <input type="text" class="form-control" id="executed_at" name="executed_at" value="{{ obj.executed_at|date:'Y/m/d   h:i:s A' }}" readonly>
                 {% endif %}                
               </div>
               <div class="mb-3">

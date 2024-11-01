@@ -15,4 +15,5 @@ urlpatterns = [
     path('stop/<int:pk>/', views.stop_model, name='stop_model'),
     path('download/<int:pk>/', views.download_model, name='download_model'),
     path('systeminfo/', views.system_info, name='system_info'),    
+    path('model_view/', views.model_view, name='model_view'),
 ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

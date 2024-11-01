@@ -21,8 +21,8 @@
             <table class="table align-items-center mb-0">
               <thead>
                 <tr>
-                  <th class="text-centertext-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Model</th>
-                  <th class="text-centertext-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Model</th>
+                  <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Description</th>
                   <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Status</th>
                   <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Executed Date</th>
                   <th class="text-center text-uppercase text-secondary text-xxs font-weight-bolder opacity-7">Created Date</th>
@@ -80,11 +80,11 @@
                     {% if obj.executed_at == NULL %}
                         <p class="text-xs font-weight-bold mb-0"> - </p>
                     {% else %}
-                        <p class="text-xs font-weight-bold mb-0">{{ obj.executed_at|date:'y/m/d' }}</p>
+                        <p class="text-xs font-weight-bold mb-0">{{ obj.executed_at|date:'Y/m/d' }}</p>
                     {% endif %}
                   </td>
                   <td class="text-center">
-                    <p class="text-xs font-weight-bold mb-0">{{ obj.created_at|date:'y/m/d' }}</p>
+                    <p class="text-xs font-weight-bold mb-0">{{ obj.created_at|date:'Y/m/d' }}</p>
                   </td>
                   <td class="btn-group btn-group-sm justify-content-center" role="group">
                     <form id="run-form-{{ obj.id }}" action="{% url 'run_model' obj.id %}" method="post" style="display:inline;">
@@ -201,7 +201,7 @@
   function reloadPage() {
       setTimeout(function() {
           location.reload();
-      }, 2000);
+      }, 10000);
   }
   window.onload = function() {
       {% if reload %}
